@@ -1,0 +1,25 @@
+{
+  "name": "passport-mspassport-example",
+  "version": "0.0.1",
+  "description": "sample app for passport-mspassport",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
+  },
+  "repository": {
+    "url": "https://github.com/mattdot/passport-mspassport-example.git",
+    "type": "git"
+  },
+  "author": "Matt Dotson <mdotson@microsoft.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "passport": "^0.3.2",
+    "passport-http": "^0.3.0",
+    "passport-http-bearer": "^1.0.1",
+    "passport-mspassport": "0.0"
+  }
+}
