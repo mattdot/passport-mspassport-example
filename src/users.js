@@ -3,11 +3,11 @@ var bcrypt = require("bcrypt-nodejs");
 var UserDB = function(data) {
     this.users = {};
     
-    if('Array' === typeof data) {
-        for(var u in data) {
-            this.add(u);
-        }
-    }
+    // if('Array' === typeof data) {
+    //     for(var u in data) {
+    //         this.add(u);
+    //     }
+    // }
 };
 
 UserDB.prototype.findByUserPassword = function(username, password, callback) {
@@ -29,6 +29,22 @@ UserDB.prototype.findByPublicKey = function(pk, callback) {
             
             for (var key in user.credentials.keys) {
                 if(key === pk) {
+                    return callback(null, user);  
+                };
+            }
+        }
+    }
+    
+    return callback(null, false); //not found
+};
+
+UserDB.prototype.findByToken = function(token, callback) {
+    for (var id in this.users) {
+        if (this.users.hasOwnProperty(id)) {
+            var user = this.users[id];
+            
+            for (var t in user.credentials.tokens) {
+                if(t === token) {
                     return callback(null, user);  
                 };
             }

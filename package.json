@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/server.js"
+    "start" : "./node_modules/.bin/nodemon src/server.js"
   },
   "repository": {
     "url": "https://github.com/mattdot/passport-mspassport-example.git",
@@ -21,5 +21,8 @@
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",
     "passport-mspassport": "0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.9.1"
   }
 }
