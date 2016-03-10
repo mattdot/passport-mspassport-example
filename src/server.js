@@ -26,7 +26,7 @@ var users = new UserDB([
 ]);
 
 var app = express();
-app.use(express.static('static'));
+app.use(express.static(__dirname + '/static'));
 app.use(bodyParser.json());
 
 // configure passport to use the MSPassportStrategy
@@ -44,16 +44,20 @@ passport.use("mspassport", new MSPassportStrategy({
 }));
 
 passport.use(new BasicStrategy(function(username, password, done) {
-    console.log(password);
     users.findByUserPassword(username, password, done);
 }));
 
-passport.use(new BearerStrategy(users.findByToken));
+passport.use(new BearerStrategy(function(token, done) {
+	users.findByToken(token, done);
+}));
 
-
+/*
+ * routes
+ *
+ */
 
 app.get("/api/v1/me", passport.authorize('bearer', { session: false }), function (req, res) {
-    res.json(req.user);
+    res.json(req.account);
 });
 
 app.put("/api/v1/me/keys", passport.authorize('bearer', { session: false }), function (req, res) {
@@ -68,10 +72,8 @@ app.post('/api/v1/me/logout', passport.authorize('bearer', { session: false }), 
    req.logout(); 
 });
 
-
 /*
- *
- * 
+ * Creates a new user in the db.
  */
 app.put("/register", function(req, res) {
     users.add(req.body);
@@ -80,24 +82,27 @@ app.put("/register", function(req, res) {
 });
 
 /*
- *
+ * Requests to this route are authenticated using basic http authentication.  Successful authentication
+ * return an access token that can be used for all '/api/*' routes.
  * 
  */
 app.get("/auth/password", passport.authorize("basic", { session: false }), function (req, res) {
-    var token = users.generateToken(req.user.preferredUserName);
+    var token = users.generateToken(req.account.preferredUserName);
     res.json(token);
 });
 
 /*
- *
- * 
+ * Requests to this route are authenticated using Microsoft Passport.  Successful authentication
+ * returns an access token that can be used for all '/api/*' routes
  */
 app.get("/auth/mspassport", passport.authorize("mspassport", { session: false }), function (req, res) {
-    var token = users.generateToken(req.user.preferredUserName);
+    var token = users.generateToken(req.account.preferredUserName);
     res.json(token);
 });
 
-
+/*
+ * start the server
+ */
 var port = process.env.PORT || 1339;
 app.listen(port, function() {
     console.log("listening for requests on port %d", port);

@@ -1,13 +1,13 @@
 var bcrypt = require("bcrypt-nodejs");
+var crypto = require("crypto");
 
 var UserDB = function(data) {
     this.users = {};
-    
-    // if('Array' === typeof data) {
-    //     for(var u in data) {
-    //         this.add(u);
-    //     }
-    // }
+    if(Array.isArray(data)) {
+        for(var u in data) {
+            this.add(data[u]);
+         }
+    }
 };
 
 UserDB.prototype.findByUserPassword = function(username, password, callback) {
@@ -55,11 +55,12 @@ UserDB.prototype.findByToken = function(token, callback) {
 };
 
 UserDB.prototype.add = function(user) {
+	console.log(user);
     if(user.credentials.hasOwnProperty('password') && user.credentials.password.length > 0) {
         user.credentials.password = bcrypt.hashSync(user.credentials.password);
     }
     
-    this.users[user.username] = user;
+    this.users[user.preferredUserName] = user;
 };
 
 UserDB.prototype.generateToken = function(username) {
